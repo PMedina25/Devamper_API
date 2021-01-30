@@ -70,7 +70,7 @@ app.use(cors());
 // Comentamos el mapeo estático. Esto no es obligatorio,
 // pero es una buena prueba para confirmar que los mapeos
 // estáticos están configurados correctamente
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount routers
 app.use('/api/v1/bootcamps', bootcamps);
