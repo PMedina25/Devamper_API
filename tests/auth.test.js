@@ -1,9 +1,9 @@
 const request = require('supertest');
 const app = require('../app');
-const { User, userOneId, userOne, setupDatabase } = require('./fixtures/db');
+const { User, userAdminId, userAdmin, setupDatabase } = require('./fixtures/db');
 
 // Change the timeout from 5000 ms to 3000 ms
-jest.setTimeout(30000);
+jest.setTimeout(60000);
 
 // Define the authentication path url
 const url = '/api/v1/auth';
@@ -29,15 +29,15 @@ describe('Test the authentication path', () => {
 
     test('Should login existing user', async () => {
         await request(app).post(`${url}/login`).send({
-            email: userOne.email,
-            password: userOne.password
+            email: userAdmin.email,
+            password: userAdmin.password
         }).expect(200);
     });
 
     test('Should get profile for user', async () => {
         await request(app)
             .get(`${url}/me`)
-            .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+            .set('Authorization', `Bearer ${userAdmin.tokens[0].token}`)
             .send()
             .expect(200);
     });
@@ -112,11 +112,14 @@ describe('Test register user fields', () => {
     });
 });
 
+/*
+*   Test suite for the login
+*/
 describe('Test login user fields', () => {
     test('Should not login nonexistent user', async () => {
         const response = await request(app).post(`${url}/login`).send({
             email: 'example@example.com',
-            password: userOne.password
+            password: userAdmin.password
         }).expect(401);
 
         expect(response.body.error).toBe('User not found');
@@ -124,7 +127,7 @@ describe('Test login user fields', () => {
 
     test('Should not login user with incorrect password', async () => {
         const response = await request(app).post(`${url}/login`).send({
-            email: userOne.email,
+            email: userAdmin.email,
             password: 'thisisnotmypassword'
         }).expect(401);
 
@@ -132,18 +135,21 @@ describe('Test login user fields', () => {
     });
 });
 
+/*
+*   Test suite for the update of the user fields
+*/
 describe('Test update user fields', () => {
     test('Should update the current password', async () => {
         await request(app)
             .put(`${url}/updatepassword`)
-            .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+            .set('Authorization', `Bearer ${userAdmin.tokens[0].token}`)
             .send({
-                currentPassword: userOne.password,
+                currentPassword: userAdmin.password,
                 newPassword: 'newpassword'
             })
             .expect(200);
 
-        const updatedUserPassword = await User.findOne({ email: userOne.email }).select('+password');
+        const updatedUserPassword = await User.findOne({ email: userAdmin.email }).select('+password');
         const isMatch = await updatedUserPassword.matchPassword('newpassword');
         expect(isMatch).toBe(true);
     });
@@ -151,7 +157,7 @@ describe('Test update user fields', () => {
     test('Should not update the current password if it does not match', async () => {
         await request(app)
             .put(`${url}/updatepassword`)
-            .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+            .set('Authorization', `Bearer ${userAdmin.tokens[0].token}`)
             .send({
                 currentPassword: 'passwordnotmatching',
                 newPassword: 'newpassword'
@@ -162,10 +168,10 @@ describe('Test update user fields', () => {
     test('Should update the current email', async () => {
         await request(app)
             .put(`${url}/updatedetails`)
-            .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+            .set('Authorization', `Bearer ${userAdmin.tokens[0].token}`)
             .send({
                 email: 'mike1@example.com',
-                name: userOne.name
+                name: userAdmin.name
             })
             .expect(200);
 
@@ -178,12 +184,15 @@ describe('Test update user fields', () => {
             .put(`${url}/updatedetails`)
             .send({
                 email: 'mike1@example.com',
-                name: userOne.name
+                name: userAdmin.name
             })
             .expect(401);
     });
 });
 
+/*
+*   Test suite for the forgot and reset password
+*/
 describe('Test forgot and reset password', () => {
     test('Should not send forgot password email if user not found', async () => {
         await request(app)
@@ -198,7 +207,7 @@ describe('Test forgot and reset password', () => {
         const response = await request(app)
             .post(`${url}/forgotpassword`)
             .send({
-                email: userOne.email
+                email: userAdmin.email
             })
             .expect(200);
         
@@ -212,7 +221,7 @@ describe('Test forgot and reset password', () => {
         await request(app)
             .put(`${url}/resetpassword/alinrtiunadf`)
             .send({
-                password: userOne.password 
+                password: userAdmin.password 
             })
             .expect(400);
     });

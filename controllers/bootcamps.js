@@ -37,8 +37,13 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
     const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id });
 
     // If the user is not an admin, they can only add one bootcamp
-    if (publishedBootcamp && req.user.role !== 'admin') {
+    if (publishedBootcamp && req.user.role === 'publisher') {
         return next(new ErrorResponse(`The user with ID ${req.user.id} has already published a bootcamp`, 400));
+    }
+
+    // If the user is a user type, they cannot add bootcamps
+    if (req.user.role === 'user') {
+        return next(new ErrorResponse(`The user with ID ${req.user.id} do not have authorization to add bootcamps`, 403))
     }
 
     const bootcamp = await Bootcamp.create(req.body);
@@ -53,7 +58,7 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/bootcamps/:id
 // @access  Private
 exports.updateBootcamp = asyncHandler(async (req, res, next) => {
-    const bootcamp = await Bootcamp.findById(req.params.id);
+    let bootcamp = await Bootcamp.findById(req.params.id);
 
     if (!bootcamp) {
         return next(
@@ -64,6 +69,11 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
     // Make sure user is bootcamp owner
     if (bootcamp.user.toString() === req.user.id && req.user.role !== 'admin') {
         return next(new ErrorResponse(`User ${req.params.id} is not authorized to update this bootcamp`, 401));
+    }
+
+    // If the user is a user type, they cannot udpate bootcamps
+    if (req.user.role === 'user') {
+        return next(new ErrorResponse(`The user with ID ${req.user.id} do not have authorization to update bootcamps`, 403))
     }
 
     bootcamp = await Bootcamp.findOneAndUpdate(req.params.id, req.body, {
@@ -167,7 +177,7 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
 
     file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
         if (err) {
-            console.error(err);
+            // console.error(err);
             return next(
                 new ErrorResponse(`Problem with file upload`, 500)
             );
@@ -181,5 +191,5 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
         });
     });
 
-    console.log(file.name);
+    // console.log(file.name);
 });
