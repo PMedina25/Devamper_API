@@ -1,8 +1,11 @@
 const app = require('./app');
+const port = require('./config/keys').PORT;
+const NODE_ENV = require('./config/keys').NODE_ENV;
 
-const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold));
+const PORT = port || 5000;
+
+const server = app.listen(PORT, console.log(`Server running in ${NODE_ENV} mode on port ${PORT}`.yellow.bold));
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {

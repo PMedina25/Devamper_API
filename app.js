@@ -21,7 +21,8 @@ const auth = require('./routes/auth');
 const users = require('./routes/users');
 
 // Load env vars
-dotenv.config({ path: './config/config.env' });
+const NODE_ENV = require('./config/keys').NODE_ENV;
+
 
 // Connect to database
 connectDB();
@@ -35,7 +36,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Dev logging middleware
-if (process.env.NODE_ENV === 'development') {
+if (NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 

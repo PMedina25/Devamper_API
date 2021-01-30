@@ -1,6 +1,11 @@
+const dotenv = require('dotenv');
+
+dotenv.config({ path: './config/config.env'});
+
 module.exports = {
+    NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT,
-    MONGO_URI: process.env.NODE_ENV,
+    MONGO_URI: process.env.MONGO_URI,
     GEOCODER_PROVIDER: process.env.GEOCODER_PROVIDER,
     GEOCODER_API_KEY: process.env.GEOCODER_API_KEY,
     FILE_UPLOAD_PATH: process.env.FILE_UPLOAD_PATH,

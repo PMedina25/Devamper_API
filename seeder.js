@@ -4,7 +4,8 @@ const colors = require('colors');
 const dotenv = require('dotenv');
 
 // Load env vars
-dotenv.config({ path: './config/config.env' });
+const MONGO_URI = require('./config/keys').MONGO_URI;
+
 
 // Load models
 const Bootcamp = require('./models/Bootcamp');
@@ -12,7 +13,7 @@ const Course = require('./models/Course');
 const User = require('./models/User');
 
 // Connect to DB
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(MONGO_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,

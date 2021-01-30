@@ -2,12 +2,14 @@ const NodeGeocoder = require('node-geocoder');
 const dotenv = require('dotenv');
 
 // Load env vars
-dotenv.config({ path: './config/config.env' });
+const GEOCODER_PROVIDER = require('../config/keys').GEOCODER_PROVIDER;
+const GEOCODER_API_KEY = require('../config/keys').GEOCODER_API_KEY;
+
 
 const options = {
-    provider: process.env.GEOCODER_PROVIDER,
+    provider: GEOCODER_PROVIDER,
     httpAdapter: 'https',
-    apiKey: process.env.GEOCODER_API_KEY,
+    apiKey: GEOCODER_API_KEY,
     formatter: null
 }
 

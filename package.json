@@ -4,7 +4,7 @@
   "description": "Devcamper backend API",
   "main": "server.js",
   "scripts": {
-    "start": "NODE_ENV=production node server",
+    "start": "NODE_ENV=production node -r dotenv/config server",
     "dev": "nodemon server",
     "test": "jest --testEnvironment=node --watchAll --runInBand"
   },
