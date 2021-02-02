@@ -1,8 +1,7 @@
 const path = require('path');
 const express = require('express');
-const dotenv = require('dotenv');
 const morgan = require('morgan');
-const colors = require('colors');
+const dotenv = require('dotenv');
 const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -21,8 +20,7 @@ const auth = require('./routes/auth');
 const users = require('./routes/users');
 
 // Load env vars
-const NODE_ENV = require('./config/keys').NODE_ENV;
-
+dotenv.config();
 
 // Connect to database
 connectDB();
@@ -36,7 +34,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Dev logging middleware
-if (NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
@@ -67,17 +65,17 @@ app.use(hpp());
 app.use(cors());
 
 // Set static folder
-// Comentamos el mapeo estático. Esto no es obligatorio,
-// pero es una buena prueba para confirmar que los mapeos
-// estáticos están configurados correctamente
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/.netlify/functions/server/', express.static('functions/public'));
 
 // Mount routers
-app.use('/api/v1/bootcamps', bootcamps);
-app.use('/api/v1/courses', courses);
-app.use('/api/v1/auth', auth);
-app.use('/api/v1/users', users);
+app.use('/.netlify/functions/server/api/v1/bootcamps', bootcamps);
+app.use('/.netlify/functions/server/api/v1/courses', courses);
+app.use('/.netlify/functions/server/api/v1/auth', auth);
+app.use('/.netlify/functions/server/api/v1/users', users);
 
 app.use(errorHandler);
 
-module.exports = app;
+// Export the app object. When executing the application local this does nothing. However,
+// to port it to AWS Lambda we will create a wrapper around that will load the app from
+// this file
+module.exports = app
