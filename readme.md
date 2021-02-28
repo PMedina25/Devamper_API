@@ -36,7 +36,7 @@ node seeder -i
 
 ## Demo
 
-The API is live at [devcamper.io](https://devcamper.io)
+The API is live at [devcamper-pmedina.herokuapp.com](https://devcamper-pmedina.herokuapp.com/)
 
 Extensive documentation with examples [here](https://documenter.getpostman.com/view/1604912/TW6wHnxp)
 
