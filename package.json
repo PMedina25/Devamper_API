@@ -33,8 +33,8 @@
     "supertest": "^6.1.3"
   },
   "scripts": {
-    "lambda-serve": "netlify-lambda serve functions",
-    "lambda-build": "netlify-lambda build functions",
+    "start": "node server",
+    "dev": "nodemon server",
     "test": "jest --testEnvironment=node --watchAll --runInBand"
   },
   "author": "Pablo Medina",
